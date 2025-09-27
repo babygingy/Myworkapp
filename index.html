@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work-Break Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom style for a subtle press effect */
+        .interactive-block:active {
+            transform: scale(0.98);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-2xl mx-auto text-center">
+        
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">Work-Break Tracker</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">Click on a block to decrease its hours.</p>
+
+        <!-- Interactive Blocks -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8">
+            <!-- Work Block -->
+            <div id="work-block" class="interactive-block bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg cursor-pointer transition-transform duration-200 ease-in-out hover:scale-105">
+                <h2 class="text-2xl font-semibold mb-2 text-blue-500 dark:text-blue-400">Work</h2>
+                <p class="text-6xl font-bold" id="work-hours">10</p>
+                <p class="text-gray-500 dark:text-gray-400">hours remaining</p>
+            </div>
+            <!-- Break Block -->
+            <div id="break-block" class="interactive-block bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg cursor-pointer transition-transform duration-200 ease-in-out hover:scale-105">
+                <h2 class="text-2xl font-semibold mb-2 text-green-500 dark:text-green-400">Break</h2>
+                <p class="text-6xl font-bold" id="break-hours">6</p>
+                <p class="text-gray-500 dark:text-gray-400">hours remaining</p>
+            </div>
+        </div>
+
+        <!-- Counter -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md mb-8">
+            <h3 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Total Cycles Completed</h3>
+            <div class="mt-2">
+                <p class="text-5xl font-bold text-purple-500 dark:text-purple-400" id="total-cycles">0</p>
+            </div>
+        </div>
+
+        <!-- Reset Button -->
+        <button id="reset-button" class="bg-red-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-red-600 transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800">
+            Reset Hours
+        </button>
+
+    </div>
+
+    <script>
+        // DOM Elements
+        const workBlock = document.getElementById('work-block');
+        const breakBlock = document.getElementById('break-block');
+        const workHoursDisplay = document.getElementById('work-hours');
+        const breakHoursDisplay = document.getElementById('break-hours');
+        const totalCyclesDisplay = document.getElementById('total-cycles');
+        const resetButton = document.getElementById('reset-button');
+
+        // Initial Values
+        const INITIAL_WORK_HOURS = 10;
+        const INITIAL_BREAK_HOURS = 6;
+
+        // State
+        let currentWorkHours = INITIAL_WORK_HOURS;
+        let currentBreakHours = INITIAL_BREAK_HOURS;
+        let totalCyclesCompleted = 0;
+
+        // --- Functions ---
+
+        // Function to update the display
+        const updateDisplay = () => {
+            workHoursDisplay.textContent = currentWorkHours;
+            breakHoursDisplay.textContent = currentBreakHours;
+            totalCyclesDisplay.textContent = totalCyclesCompleted;
+        };
+
+        // --- Event Listeners ---
+
+        // Work block click handler
+        workBlock.addEventListener('click', () => {
+            if (currentWorkHours > 0) {
+                currentWorkHours--;
+                // A cycle is only completed when BOTH timers reach zero.
+                if (currentWorkHours === 0 && currentBreakHours === 0) {
+                    totalCyclesCompleted++;
+                }
+                updateDisplay();
+            }
+        });
+
+        // Break block click handler
+        breakBlock.addEventListener('click', () => {
+            if (currentBreakHours > 0) {
+                currentBreakHours--;
+                // A cycle is only completed when BOTH timers reach zero.
+                if (currentWorkHours === 0 && currentBreakHours === 0) {
+                    totalCyclesCompleted++;
+                }
+                updateDisplay();
+            }
+        });
+
+        // Reset button click handler
+        resetButton.addEventListener('click', () => {
+            currentWorkHours = INITIAL_WORK_HOURS;
+            currentBreakHours = INITIAL_BREAK_HOURS;
+            // Note: totalCyclesCompleted is NOT reset.
+            updateDisplay();
+        });
+
+        // Initial call to set up the page
+        document.addEventListener('DOMContentLoaded', updateDisplay);
+    </script>
+</body>
+</html>
+
